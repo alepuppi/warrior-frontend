@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import logo from "../assets/logo.jpg";
+import logo from "../assets/logo.jpg";// Solo forzando rebuild en Vercel
 
 const Login = () => {
   const [username, setUsername] = useState(""); // Cambio de "usuario" a "username"
@@ -12,7 +12,7 @@ const Login = () => {
     event.preventDefault(); // Evita la recarga de la página
 
     try {
-      const response = await fetch("http://localhost:3006/api/login", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }), // Cambio de "usuario" a "username"
