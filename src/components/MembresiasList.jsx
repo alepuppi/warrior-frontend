@@ -11,6 +11,7 @@ const MembresiasList = ({ cerrar }) => {
 
   const obtenerMembresias = async () => {
     try {
+      console.log("Llamando a:", "https://thewarriorhouse.onrender.com/api/membresias/listado");
       const response = await axios.get("https://thewarriorhouse.onrender.com/api/membresias/listado");
       setMembresias(response.data);
     } catch (error) {
