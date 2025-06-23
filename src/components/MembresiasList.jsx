@@ -19,11 +19,51 @@ const MembresiasList = ({ cerrar }) => {
     }
   };
 
+  const descargarPDF = async () => {
+    try {
+      const response = await axios.get(
+        "https://thewarriorhouse.onrender.com/api/membresias/descargar-pdf",
+        { responseType: "blob" }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "membresias.pdf");
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error("Error al descargar PDF:", error);
+    }
+  };
+
+  const descargarExcel = async () => {
+    try {
+      const response = await axios.get(
+        "https://thewarriorhouse.onrender.com/api/membresias/descargar-excel",
+        { responseType: "blob" }
+      );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "membresias.xlsx");
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error("Error al descargar Excel:", error);
+    }
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal">
         <h2>Listado de Membresías</h2>
         <button className="cerrar-btn" onClick={cerrar}>X</button>
+
+        <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+          <button onClick={descargarPDF}>Descargar PDF</button>
+          <button onClick={descargarExcel}>Descargar Excel</button>
+        </div>
+
         <div className="tabla-contenedor">
           <table>
             <thead>
