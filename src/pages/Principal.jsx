@@ -89,7 +89,7 @@ const Principal = () => {
             Membresías 
             <ul className="submenu">
               <li onClick={abrirModalMembresia}>Registrar</li>
-              <li onClick={abrirListadoMembresias}>Ver Listado</li>
+              <li onClick={abrirListadoMembresias}>Listado</li>
             </ul>
           </li>
           <li className="nav-item">
