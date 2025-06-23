@@ -38,17 +38,33 @@ const MembresiasList = ({ cerrar }) => {
               </tr>
             </thead>
             <tbody>
-              {membresias.map((m) => (
-                <tr key={m.id}>
-                  <td>{m.nombre_completo_1}</td>
-                  <td>{m.dni_1}</td>
-                  <td>{m.fecha_inicio?.split("T")[0]}</td>
-                  <td>{m.fecha_fin?.split("T")[0]}</td>
-                  <td>{m.tipo_membresia}</td>
-                  <td>{m.numero_boleta}</td>
-                  <td>{m.metodo_pago}</td>
-                </tr>
-              ))}
+              {membresias.flatMap((m) => {
+                const fila1 = (
+                  <tr key={`${m.id}-1`}>
+                    <td>{m.nombre_completo_1}</td>
+                    <td>{m.dni_1}</td>
+                    <td>{m.fecha_inicio?.split("T")[0]}</td>
+                    <td>{m.fecha_fin?.split("T")[0]}</td>
+                    <td>{m.tipo_membresia}</td>
+                    <td>{m.numero_boleta}</td>
+                    <td>{m.metodo_pago}</td>
+                  </tr>
+                );
+
+                const fila2 = m.nombre_completo_2 ? (
+                  <tr key={`${m.id}-2`}>
+                    <td>{m.nombre_completo_2}</td>
+                    <td>{m.dni_2}</td>
+                    <td>{m.fecha_inicio?.split("T")[0]}</td>
+                    <td>{m.fecha_fin?.split("T")[0]}</td>
+                    <td>{m.tipo_membresia}</td>
+                    <td>{m.numero_boleta}</td>
+                    <td>{m.metodo_pago}</td>
+                  </tr>
+                ) : null;
+
+                return fila2 ? [fila1, fila2] : [fila1];
+              })}
               {membresias.length === 0 && (
                 <tr>
                   <td colSpan="7" style={{ textAlign: "center" }}>No hay membresías registradas.</td>
