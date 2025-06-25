@@ -1,17 +1,24 @@
 // components/RenovacionBuscarModal.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./renovacionBuscarModal.css";
 
-const RenovacionBuscarModal = ({ cerrar }) => {
-  const [dni, setDni] = useState("");
+const RenovacionBuscarModal = ({ cerrar, dniAuto = "" }) => {
+  const [dni, setDni] = useState(dniAuto);
   const [cliente, setCliente] = useState(null);
   const [mensaje, setMensaje] = useState("");
 
-  const buscarCliente = async () => {
-    if (!dni) return;
+  // 🔁 Ejecutar búsqueda automática si viene un dniAuto
+  useEffect(() => {
+    if (dniAuto) {
+      buscarCliente(dniAuto);
+    }
+  }, [dniAuto]);
+
+  const buscarCliente = async (dniBuscar = dni) => {
+    if (!dniBuscar) return;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/clientes/${dni}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/clientes/${dniBuscar}`);
       const data = await response.json();
 
       if (response.ok) {
@@ -46,23 +53,22 @@ const RenovacionBuscarModal = ({ cerrar }) => {
             onChange={(e) => setDni(e.target.value)}
             placeholder="Ingresa el DNI"
           />
-          <button onClick={buscarCliente}>Buscar</button>
+          <button onClick={() => buscarCliente()}>Buscar</button>
         </div>
 
         {mensaje && <p className="mensaje">{mensaje}</p>}
 
         {cliente && (
-    <div className="cliente-info">
-    <p><strong>Nombre:</strong> {cliente.nombre}</p>
-    <p><strong>DNI:</strong> {cliente.dni}</p>
-    <p><strong>Fecha de matrícula:</strong> {new Date(cliente.fecha_matricula).toLocaleDateString()}</p>
-    <p><strong>Fecha de vencimiento:</strong> {new Date(cliente.fecha_vencimiento).toLocaleDateString()}</p>
-    {calcularVencimiento(cliente.fecha_vencimiento) && (
-      <p className="alerta">⚠ La membresía está vencida</p>
-     )}
-     </div>
-     )}
-
+          <div className="cliente-info">
+            <p><strong>Nombre:</strong> {cliente.nombre}</p>
+            <p><strong>DNI:</strong> {cliente.dni}</p>
+            <p><strong>Fecha de matrícula:</strong> {new Date(cliente.fecha_matricula).toLocaleDateString()}</p>
+            <p><strong>Fecha de vencimiento:</strong> {new Date(cliente.fecha_vencimiento).toLocaleDateString()}</p>
+            {calcularVencimiento(cliente.fecha_vencimiento) && (
+              <p className="alerta">⚠ La membresía está vencida</p>
+            )}
+          </div>
+        )}
 
         <div className="modal-buttons">
           <button className="cancel" onClick={cerrar}>Cerrar</button>
