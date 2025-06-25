@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import ClienteModal from "../components/ClienteModal"; /*lol*/
+import React, { useState, useEffect } from "react";
+import ClienteModal from "../components/ClienteModal";
 import ClientesList from "../components/ClientesList";
 import EditarClienteModal from "../components/EditarClienteModal";
 import MembresiaModal from "../components/MembresiaModal";
@@ -7,10 +7,14 @@ import RegistrarMensualModal from "../components/RegistrarMensualModal";
 import RegistrarDuoModal from "../components/RegistrarDuoModal";
 import RegistrarTrimestralModal from "../components/RegistrarTrimestralModal";
 import MembresiasList from "../components/MembresiasList";
-import "./principal.css";
-import logo from "../assets/logo.jpg";
 import AsistenciasActualModal from "../components/AsistenciasActualModal";
 import AsistenciasReporteModal from "../components/AsistenciasReporteModal";
+import RenovacionBuscarModal from "../components/RenovacionBuscarModal";
+import "./principal.css";
+import logo from "../assets/logo.jpg";
+import { io } from "socket.io-client";
+
+const socket = io(import.meta.env.VITE_API_URL);
 
 const Principal = () => {
   const [mostrarRegistro, setMostrarRegistro] = useState(false);
@@ -24,6 +28,19 @@ const Principal = () => {
   const [mostrarListadoMembresias, setMostrarListadoMembresias] = useState(false);
   const [mostrarAsistenciasActual, setMostrarAsistenciasActual] = useState(false);
   const [mostrarAsistenciasReporte, setMostrarAsistenciasReporte] = useState(false);
+  const [mostrarRenovacionBuscar, setMostrarRenovacionBuscar] = useState(false);
+  const [dniRenovacion, setDniRenovacion] = useState("");
+
+  useEffect(() => {
+    socket.on("renovacion:mostrarModal", (dni) => {
+      setDniRenovacion(dni);
+      setMostrarRenovacionBuscar(true);
+    });
+
+    return () => {
+      socket.off("renovacion:mostrarModal");
+    };
+  }, []);
 
   const cerrarModales = () => {
     setMostrarRegistro(false);
@@ -36,6 +53,8 @@ const Principal = () => {
     setMostrarListadoMembresias(false);
     setMostrarAsistenciasActual(false);
     setMostrarAsistenciasReporte(false);
+    setMostrarRenovacionBuscar(false);
+    setDniRenovacion("");
   };
 
   const abrirModalRegistro = () => {
@@ -73,6 +92,11 @@ const Principal = () => {
     setMostrarAsistenciasReporte(true);
   };
 
+  const abrirModalRenovacion = () => {
+    cerrarModales();
+    setMostrarRenovacionBuscar(true);
+  };
+
   return (
     <div className="principal-container">
       {/* NAVBAR */}
@@ -102,7 +126,7 @@ const Principal = () => {
           <li className="nav-item">
             Renovación
             <ul className="submenu">
-              <li>Buscar</li>
+              <li onClick={abrirModalRenovacion}>Buscar</li>
               <li>Reporte</li>
             </ul>
           </li>
@@ -145,31 +169,18 @@ const Principal = () => {
         />
       )}
 
-      {mostrarMensual && (
-        <RegistrarMensualModal cerrar={cerrarModales} />
-      )}
+      {mostrarMensual && <RegistrarMensualModal cerrar={cerrarModales} />}
+      {mostrarDuo && <RegistrarDuoModal cerrar={cerrarModales} />}
+      {mostrarTrimestral && <RegistrarTrimestralModal cerrar={cerrarModales} />}
+      {mostrarListadoMembresias && <MembresiasList cerrar={cerrarModales} />}
+      {mostrarAsistenciasActual && <AsistenciasActualModal cerrar={cerrarModales} />}
+      {mostrarAsistenciasReporte && <AsistenciasReporteModal cerrar={cerrarModales} />}
 
-      {mostrarDuo && (
-        <RegistrarDuoModal cerrar={cerrarModales} />
-      )}
-
-      {mostrarTrimestral && (
-        <RegistrarTrimestralModal cerrar={cerrarModales} />
-      )}
-
-      {mostrarListadoMembresias && (
-        <MembresiasList cerrar={cerrarModales} />
-      )}
-
-      {mostrarAsistenciasActual && (
-        <AsistenciasActualModal cerrar={cerrarModales} />
-      )}
-
-      {mostrarAsistenciasReporte && (
-        <AsistenciasReporteModal cerrar={cerrarModales} />
+      {mostrarRenovacionBuscar && (
+        <RenovacionBuscarModal cerrar={cerrarModales} dniInicial={dniRenovacion} />
       )}
     </div>
   );
 };
 
-export default Principal; 
+export default Principal;

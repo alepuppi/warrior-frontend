@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import "./renovacionBuscarModal.css";
 
-const RenovacionBuscarModal = ({ cerrar, dniAuto = "" }) => {
-  const [dni, setDni] = useState(dniAuto);
+const RenovacionBuscarModal = ({ cerrar, dniInicial = "" }) => {
+  const [dni, setDni] = useState(dniInicial);
   const [cliente, setCliente] = useState(null);
   const [mensaje, setMensaje] = useState("");
 
